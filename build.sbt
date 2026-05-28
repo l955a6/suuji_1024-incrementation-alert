@@ -1,5 +1,5 @@
 ThisBuild / organization := "l955a6"
-ThisBuild / version      := "0.1.0-SNAPSHOT"
+ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.8.3"
 
 lazy val commonSettings = Seq(
@@ -7,7 +7,7 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-feature",
     "-unchecked",
-    "-Xfatal-warnings",
+    "-Werror",
     "-source:future",
     "-Wunused:all"
   )
