@@ -5,7 +5,7 @@ package blue.l955a6.incrementationAlert.domain.value.number
  *
  * Misskeyでのインクリメントを想定する場合3000桁近い数値を扱う場合がある。
  *
- * パフォーマンスの都合で実装が変わる可能性があるので、外部には[[IncrementationNumber]]という型と そのメソッドのみ公開するようにしてください。
+ * パフォーマンスの都合で実装が変わる可能性があるので、外部には[[IncrementationNumber]]という型とそのメソッドのみ公開するようにしてください。
  */
 sealed trait IncrementationNumber
 
