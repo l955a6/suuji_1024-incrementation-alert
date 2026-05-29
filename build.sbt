@@ -30,5 +30,8 @@ lazy val domain = (project in file("domain"))
   .settings(commonSettings)
   .settings(
     name := "domain",
-    libraryDependencies ++= Seq()
+    libraryDependencies ++= Seq(
+      Dependencies.scalatest,
+      Dependencies.scalacheck
+    )
   )
