@@ -8,7 +8,6 @@ lazy val commonSettings = Seq(
     "-feature",
     "-unchecked",
     "-Werror",
-    "-source:future",
     "-Wunused:all"
   )
 )
