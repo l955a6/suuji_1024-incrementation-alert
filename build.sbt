@@ -13,7 +13,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(incrementationAlert)
+  .aggregate(incrementationAlert, domain)
   .settings(
     publish / skip := true
   )
@@ -22,5 +22,13 @@ lazy val incrementationAlert = (project in file("incrementation-alert"))
   .settings(commonSettings)
   .settings(
     name := "incrementation-alert",
+    libraryDependencies ++= Seq()
+  )
+  .dependsOn(domain)
+
+lazy val domain = (project in file("domain"))
+  .settings(commonSettings)
+  .settings(
+    name := "domain",
     libraryDependencies ++= Seq()
   )
