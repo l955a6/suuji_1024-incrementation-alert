@@ -1,40 +1,34 @@
 package blue.l955a6.incrementationAlert.domain.value.number
 
-import org.scalacheck.Arbitrary
+import blue.l955a6.incrementationAlert.domain.testkit.gen.IncrementationNumberTestSupportGen
 import org.scalacheck.Gen
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheckPropertyChecks {
-  private val nonNegativeLongGen = Gen.choose(0L, Long.MaxValue)
-  private val positiveHugeIntGen = Arbitrary.arbitrary[BigInt].map { n =>
-    val abs = n.abs
-    val offset = if (abs == 0) BigInt(Long.MaxValue) + 1 else BigInt(Long.MaxValue)
-    abs + offset
-  }
-
   "IncrementationNumber" should "非負のLong値として解釈可能な半角文字列から作成できる" in {
-    forAll(nonNegativeLongGen) { n =>
+    forAll(IncrementationNumberTestSupportGen.nonNegativeLong) { n =>
       IncrementationNumber(n.toString)
     }
   }
 
   "IncrementationNumber" should "Long値の範囲を超えていても正の整数として解釈可能な半角文字列から作成できる" in {
-    forAll(positiveHugeIntGen) { n =>
+    forAll(IncrementationNumberTestSupportGen.positiveHugeInt) { n =>
       IncrementationNumber(n.toString)
     }
   }
 
   "IncrementationNumber.isIncrementedFrom()" should "全ての正のIncrementationNumberはそれより1つ小さいIncrementationNumberをインクリメントしたものである" in {
-    val positiveLongGen = nonNegativeLongGen.map(n => if (n == 0) 1L else n)
+    val positiveLongGen =
+      IncrementationNumberTestSupportGen.nonNegativeLong.map(n => if (n == 0) 1L else n)
     forAll(positiveLongGen) { n =>
       val x = IncrementationNumber(n.toString)
       val y = IncrementationNumber((n - 1).toString)
       x.isIncrementedFrom(y) shouldBe true
     }
 
-    forAll(positiveHugeIntGen) { n =>
+    forAll(IncrementationNumberTestSupportGen.positiveHugeInt) { n =>
       val x = IncrementationNumber(n.toString)
       val y = IncrementationNumber((n - 1).toString)
       x.isIncrementedFrom(y) shouldBe true
@@ -50,12 +44,12 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
   "IncrementationNumber.isIncrementedFrom()" should "0のIncrementationNumberはどのIncrementationNumberをインクリメントしたものでもない" in {
     val zero = IncrementationNumber("0")
 
-    forAll(nonNegativeLongGen) { n =>
+    forAll(IncrementationNumberTestSupportGen.nonNegativeLong) { n =>
       val that = IncrementationNumber(n.toString)
       zero.isIncrementedFrom(that) shouldBe false
     }
 
-    forAll(positiveHugeIntGen) { n =>
+    forAll(IncrementationNumberTestSupportGen.positiveHugeInt) { n =>
       val that = IncrementationNumber(n.toString)
       zero.isIncrementedFrom(that) shouldBe false
     }
@@ -63,7 +57,7 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
 
   "IncrementationNumber.isIncrementedFrom()" should "全てのIncrementationNumberはそれより2以上小さいIncrementationNumberをインクリメントしたものではない" in {
     val gen1 = for {
-      _x <- nonNegativeLongGen
+      _x <- IncrementationNumberTestSupportGen.nonNegativeLong
       x = if (_x < 2) _x + 2 else _x
       y <- Gen.choose(0L, x - 2L)
     } yield (
@@ -77,8 +71,8 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
 
     // 2番目の要素はLongの可能性がある
     val gen2 = for {
-      x <- positiveHugeIntGen
-      _y <- positiveHugeIntGen
+      x <- IncrementationNumberTestSupportGen.positiveHugeInt
+      _y <- IncrementationNumberTestSupportGen.positiveHugeInt
       y = _y % (x - 1)
     } yield (
       IncrementationNumber(x.toString),
@@ -91,12 +85,12 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
   }
 
   "IncrementationNumber.isIncrementedFrom()" should "全てのIncrementationNumberは自身をインクリメントしたものではない" in {
-    forAll(nonNegativeLongGen) { _n =>
+    forAll(IncrementationNumberTestSupportGen.nonNegativeLong) { _n =>
       val n = IncrementationNumber(_n.toString)
       n.isIncrementedFrom(n) shouldBe false
     }
 
-    forAll(positiveHugeIntGen) { _n =>
+    forAll(IncrementationNumberTestSupportGen.positiveHugeInt) { _n =>
       val n = IncrementationNumber(_n.toString)
       n.isIncrementedFrom(n) shouldBe false
     }
@@ -104,7 +98,7 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
 
   "IncrementationNumber.isIncrementedFrom()" should "全てのIncrementationNumberは自身より大きなIncrementationNumberをインクリメントしたものではない" in {
     val gen1 = for {
-      x <- nonNegativeLongGen
+      x <- IncrementationNumberTestSupportGen.nonNegativeLong
       y <- Gen.choose(x + 1, Long.MaxValue)
     } yield (
       IncrementationNumber(x.toString),
@@ -116,8 +110,11 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
     }
 
     val gen2 = for {
-      x <- positiveHugeIntGen
-      y <- Gen.oneOf(nonNegativeLongGen.map(BigInt.apply), positiveHugeIntGen)
+      x <- IncrementationNumberTestSupportGen.positiveHugeInt
+      y <- Gen.oneOf(
+        IncrementationNumberTestSupportGen.nonNegativeLong.map(BigInt.apply),
+        IncrementationNumberTestSupportGen.positiveHugeInt
+      )
     } yield (
       IncrementationNumber(x.toString),
       IncrementationNumber(y.toString)
