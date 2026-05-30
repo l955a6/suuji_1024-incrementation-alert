@@ -23,7 +23,7 @@ object IncrementationNumberDigits {
         IncrementationNumberWidth.Half
       )
     )
-    lazy val full = Option.when(FullWidthRegex.matches(s))(
+    def full = Option.when(FullWidthRegex.matches(s))(
       IncrementationNumberDigits(
         IncrementationNumber(s.map(c => (c + fullWidthToHalfWidth).toChar)),
         IncrementationNumberWidth.Full
