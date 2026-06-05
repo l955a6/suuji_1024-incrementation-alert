@@ -33,7 +33,7 @@ final case class Suuji1024IncrementationStateMachine(
                 incrementationMessage.numberDigits.isIncrementedFrom(
                   lastAcceptedIncrementationMessage.numberDigits
                 ) && incrementationMessage.numberDigits == maxNumberDigits
-              ) State.Complete(incrementationMessage)
+              ) State.Completed(incrementationMessage)
               else if (
                 incrementationMessage.numberDigits.isIncrementedFrom(
                   lastAcceptedIncrementationMessage.numberDigits
@@ -51,7 +51,7 @@ final case class Suuji1024IncrementationStateMachine(
                   incrementationMessage
                 )
             copy(state = next)
-          case State.Failure(_, _) | State.Complete(_) =>
+          case State.Failure(_, _) | State.Completed(_) =>
             val next =
               if (incrementationMessage.numberDigits == initialNumberDigits)
                 State.Monitoring(incrementationMessage)
@@ -59,7 +59,7 @@ final case class Suuji1024IncrementationStateMachine(
             copy(state = next)
       case Event.NormalMessage(message) =>
         state match {
-          case State.Failure(_, _) | State.Complete(_) =>
+          case State.Failure(_, _) | State.Completed(_) =>
             copy(state = State.Idle)
           case _ =>
             this
@@ -81,7 +81,7 @@ object Suuji1024IncrementationStateMachine {
 
     case Monitoring(lastAcceptedIncrementationMessage: IncrementationMessage)
 
-    case Complete(lastAcceptedIncrementationMessage: IncrementationMessage)
+    case Completed(lastAcceptedIncrementationMessage: IncrementationMessage)
 
     case Failure(
       lastAcceptedIncrementationMessage: IncrementationMessage,
