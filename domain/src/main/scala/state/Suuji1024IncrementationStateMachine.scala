@@ -2,7 +2,6 @@ package blue.l955a6.incrementationAlert.domain.state
 
 import blue.l955a6.incrementationAlert.domain.model.IncrementationMessage
 import blue.l955a6.incrementationAlert.domain.model.Message
-import blue.l955a6.incrementationAlert.domain.value.number.IncrementationNumber
 import blue.l955a6.incrementationAlert.domain.value.number.IncrementationNumberDigits
 
 /**
