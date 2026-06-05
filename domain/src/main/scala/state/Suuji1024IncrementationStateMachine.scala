@@ -24,8 +24,9 @@ final case class Suuji1024IncrementationStateMachine(
       case Event.Incrementation(incrementationMessage) =>
         state match
           case State.Idle =>
-            // FIXME: メッセージのnumberがinitialNumberに等しくなければIdleのままにする
-            copy(state = State.Monitoring(incrementationMessage))
+            if (incrementationMessage.numberDigits == initialNumberDigits)
+              copy(state = State.Monitoring(incrementationMessage))
+            else this
           case currentState @ State.Monitoring(lastAcceptedIncrementationMessage) =>
             val next =
               if (
