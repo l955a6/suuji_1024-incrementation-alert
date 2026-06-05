@@ -19,6 +19,13 @@ final case class Suuji1024IncrementationStateMachine(
 ) {
   import Suuji1024IncrementationStateMachine.*
 
+  require(
+    initialNumberDigits.width == maxNumberDigits.width,
+    s"$this の initialNumberDigits と maxNumberDigits の半角/全角は揃っている必要があります"
+  )
+
+  // TODO: initialNumberDigitsの大きさ < maxNumberDigitsの大きさ であることを検証する
+
   def send(event: Suuji1024IncrementationStateMachine.Event): Suuji1024IncrementationStateMachine =
     event match {
       case Event.Incrementation(incrementationMessage) =>
