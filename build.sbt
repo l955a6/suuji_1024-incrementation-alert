@@ -1,5 +1,5 @@
 ThisBuild / organization := "l955a6"
-ThisBuild / version      := "0.1.0-SNAPSHOT"
+ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "3.8.3"
 
 lazy val commonSettings = Seq(
@@ -7,14 +7,13 @@ lazy val commonSettings = Seq(
     "-deprecation",
     "-feature",
     "-unchecked",
-    "-Xfatal-warnings",
-    "-source:future",
+    "-Werror",
     "-Wunused:all"
   )
 )
 
 lazy val root = (project in file("."))
-  .aggregate(incrementationAlert)
+  .aggregate(incrementationAlert, domain)
   .settings(
     publish / skip := true
   )
@@ -24,4 +23,15 @@ lazy val incrementationAlert = (project in file("incrementation-alert"))
   .settings(
     name := "incrementation-alert",
     libraryDependencies ++= Seq()
+  )
+  .dependsOn(domain)
+
+lazy val domain = (project in file("domain"))
+  .settings(commonSettings)
+  .settings(
+    name := "domain",
+    libraryDependencies ++= Seq(
+      Dependencies.scalatest,
+      Dependencies.scalacheck
+    )
   )
