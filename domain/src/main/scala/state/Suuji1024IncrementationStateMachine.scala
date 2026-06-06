@@ -53,12 +53,12 @@ final case class Suuji1024IncrementationStateMachine(
               else
                 // TODO: 長期的にインクリメントしていくことを意識せず、ちょっとだけインクリメントしようとする人がいるかもしれないので
                 //       インクリメントを監視し始める閾値を導入することを考える
-                State.Failure(
+                State.Failed(
                   lastAcceptedIncrementationMessage,
                   incrementationMessage
                 )
             copy(state = next)
-          case State.Failure(_, _) | State.Completed(_) =>
+          case State.Failed(_, _) | State.Completed(_) =>
             val next =
               if (incrementationMessage.numberDigits == initialNumberDigits)
                 State.Monitoring(incrementationMessage)
@@ -66,7 +66,7 @@ final case class Suuji1024IncrementationStateMachine(
             copy(state = next)
       case Event.NormalMessage(message) =>
         state match {
-          case State.Failure(_, _) | State.Completed(_) =>
+          case State.Failed(_, _) | State.Completed(_) =>
             copy(state = State.Idle)
           case _ =>
             this
@@ -90,7 +90,7 @@ object Suuji1024IncrementationStateMachine {
 
     case Completed(lastAcceptedIncrementationMessage: IncrementationMessage)
 
-    case Failure(
+    case Failed(
       lastAcceptedIncrementationMessage: IncrementationMessage,
       invalidIncrementationMessage: IncrementationMessage
     )

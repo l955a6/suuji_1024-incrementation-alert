@@ -172,7 +172,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = stateMachine.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = lastAcceptedIncrementationMessage,
       invalidIncrementationMessage = message
     )
@@ -192,7 +192,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = stateMachine.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = lastAcceptedIncrementationMessage,
       invalidIncrementationMessage = message
     )
@@ -240,7 +240,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = monitoringFullWidth.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("１０２４"),
       invalidIncrementationMessage = message
     )
@@ -252,7 +252,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = monitoringHalfWidth.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("1024"),
       invalidIncrementationMessage = message
     )
@@ -272,7 +272,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = monitoringFullWidth.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("１０２４"),
       invalidIncrementationMessage = message
     )
@@ -284,7 +284,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = monitoringHalfWidth.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("1024"),
       invalidIncrementationMessage = message
     )
@@ -326,7 +326,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = monitoringBeforeMaxFullWidth.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("２０４７"),
       invalidIncrementationMessage = message
     )
@@ -338,7 +338,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
     val event = Suuji1024IncrementationStateMachine.Event.Incrementation(message)
 
     val nextState = monitoringBeforeMaxHalfWidth.send(event).state
-    val expected = Suuji1024IncrementationStateMachine.State.Failure(
+    val expected = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("2047"),
       invalidIncrementationMessage = message
     )
@@ -348,7 +348,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
   val failedFullWidth = Suuji1024IncrementationStateMachine(
     initialNumberDigits = suuji1024FullWidth,
     maxNumberDigits = maxFullWidth,
-    state = Suuji1024IncrementationStateMachine.State.Failure(
+    state = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("１０２４"),
       invalidIncrementationMessage = incrementationMessage("１０２６")
     )
@@ -368,7 +368,7 @@ class Suuji1024IncrementationStateMachineTest extends AnyFlatSpec with Matchers 
   val failedHalfWidth = Suuji1024IncrementationStateMachine(
     initialNumberDigits = suuji1024HalfWidth,
     maxNumberDigits = maxHalfWidth,
-    state = Suuji1024IncrementationStateMachine.State.Failure(
+    state = Suuji1024IncrementationStateMachine.State.Failed(
       lastAcceptedIncrementationMessage = incrementationMessage("1024"),
       invalidIncrementationMessage = incrementationMessage("1026")
     )
