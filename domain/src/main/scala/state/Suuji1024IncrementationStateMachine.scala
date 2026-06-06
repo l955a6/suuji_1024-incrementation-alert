@@ -3,8 +3,17 @@ package blue.l955a6.incrementationAlert.domain.state
 import blue.l955a6.incrementationAlert.domain.model.Message
 import blue.l955a6.incrementationAlert.domain.value.number.IncrementationNumber
 
+/**
+ * インクリメントが1ずつ行われているか、同じ数字が重複していないかを検証するステートマシンです。
+ *
+ * @param initialNumber
+ *   どの数字からインクリメントを開始するか。
+ * @param maxNumber
+ *   どの数字でインクリメントを完了とするか。SNSにメッセージとして投稿できる文字数の上限など、プラットフォームの事情により設定される。
+ */
 final case class Suuji1024IncrementationStateMachine(
   initialNumber: IncrementationNumber,
+  maxNumber: IncrementationNumber,
   state: Suuji1024IncrementationStateMachine.State
 ) {
   import Suuji1024IncrementationStateMachine.*
@@ -18,7 +27,9 @@ final case class Suuji1024IncrementationStateMachine(
             copy(state = next)
           case currentState @ State.Monitoring(current, lastAcceptedIncrementationMessage) =>
             val next =
-              if (number.isIncrementedFrom(current))
+              if (number.isIncrementedFrom(current) && number == maxNumber)
+                State.Complete(message)
+              else if (number.isIncrementedFrom(current))
                 State.Monitoring(number, message)
               else if (number == initialNumber)
                 // 初期の数値と同じ数値が流れてきた場合、それはインクリメントを意図しているのではなく
@@ -33,11 +44,7 @@ final case class Suuji1024IncrementationStateMachine(
                   message
                 )
             copy(state = next)
-          case State.Failure(
-                lastNumber,
-                lastAcceptedIncrementationMessage,
-                invalidIncrementationMessage
-              ) =>
+          case State.Failure(_, _, _) | State.Complete(_) =>
             val next =
               if (number == initialNumber)
                 State.Monitoring(
@@ -46,10 +53,9 @@ final case class Suuji1024IncrementationStateMachine(
                 )
               else State.Idle
             copy(state = next)
-
       case Event.NormalMessage(message) =>
         state match {
-          case State.Failure(_, _, _) =>
+          case State.Failure(_, _, _) | State.Complete(_) =>
             copy(state = State.Idle)
           case _ =>
             this
@@ -71,6 +77,10 @@ object Suuji1024IncrementationStateMachine {
 
     case Monitoring(
       current: IncrementationNumber,
+      lastAcceptedIncrementationMessage: Message
+    )
+
+    case Complete(
       lastAcceptedIncrementationMessage: Message
     )
 
