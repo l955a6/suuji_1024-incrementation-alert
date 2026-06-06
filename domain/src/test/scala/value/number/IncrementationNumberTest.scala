@@ -21,7 +21,7 @@ class IncrementationNumberTest extends AnyFlatSpec with Matchers with ScalaCheck
 
   "IncrementationNumber.isIncrementedFrom()" should "全ての正のIncrementationNumberはそれより1つ小さいIncrementationNumberをインクリメントしたものである" in {
     val positiveLongGen =
-      IncrementationNumberTestSupportGen.nonNegativeLong.map(n => if (n == 0) 1L else n)
+      IncrementationNumberTestSupportGen.nonNegativeLong.filter(_ != 0L)
     forAll(positiveLongGen) { n =>
       val x = IncrementationNumber(n.toString)
       val y = IncrementationNumber((n - 1).toString)
