@@ -12,20 +12,19 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        jdk = pkgs.jdk25;
-        sbt = pkgs.sbt.override { jre = jdk; };
+        sbt = pkgs.sbt.override { jre = pkgs.temurin-jre-bin-25; };
       in
       {
         devShells = {
           default = pkgs.mkShell {
             buildInputs = [
-              jdk
+              pkgs.temurin-bin-25
               sbt
               pkgs.metals
             ];
 
             shellHook = ''
-              echo "Welcome to the suuji_1024-incrementation-alert development environment!🤏"
+              echo "Welcome to the suuji-1024-incrementation-monitor development environment!🤏"
             '';
           };
         };
