@@ -25,6 +25,12 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
     libraryDependencies ++= Seq()
   )
   .dependsOn(domain)
+  .enablePlugins(JavaAppPackaging, DockerPlugin)
+  .settings(
+    dockerBaseImage := "eclipse-temurin:25-jre",
+    Docker / daemonUserUid := Some("1001"),
+    Docker / daemonUser := "suuji-1024-incrementation-monitor"
+  )
 
 lazy val domain = (project in file("domain"))
   .settings(commonSettings)
