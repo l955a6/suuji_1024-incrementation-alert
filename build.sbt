@@ -13,18 +13,24 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(incrementationAlert, domain)
+  .aggregate(suuji1024IncrementationMonitor, domain)
   .settings(
     publish / skip := true
   )
 
-lazy val incrementationAlert = (project in file("incrementation-alert"))
+lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-incrementation-monitor"))
   .settings(commonSettings)
   .settings(
-    name := "incrementation-alert",
+    name := "suuji-1024-incrementation-monitor",
     libraryDependencies ++= Seq()
   )
   .dependsOn(domain)
+  .enablePlugins(JavaAppPackaging, DockerPlugin)
+  .settings(
+    dockerBaseImage := "eclipse-temurin:25-jre",
+    Docker / daemonUserUid := Some("1001"),
+    Docker / daemonUser := "suuji-1024-incrementation-monitor"
+  )
 
 lazy val domain = (project in file("domain"))
   .settings(commonSettings)
