@@ -22,7 +22,10 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
   .settings(commonSettings)
   .settings(
     name := "suuji-1024-incrementation-monitor",
-    libraryDependencies ++= Seq()
+    libraryDependencies ++= Seq(
+      Dependencies.sttp,
+      Dependencies.scalatest
+    )
   )
   .dependsOn(domain)
   .enablePlugins(JavaAppPackaging, DockerPlugin)
