@@ -1,6 +1,8 @@
 import sbt._
 
 object Dependencies {
+  val typesafeConfig = "com.typesafe" % "config" % "1.4.9"
+
   val sttp = "com.softwaremill.sttp.client4" %% "fs2" % "4.0.25"
 
   val scalatest = "org.scalatest" %% "scalatest" % "3.2.20" % "test"

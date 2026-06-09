@@ -23,6 +23,7 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
   .settings(
     name := "suuji-1024-incrementation-monitor",
     libraryDependencies ++= Seq(
+      Dependencies.typesafeConfig,
       Dependencies.sttp,
       Dependencies.scalatest
     )
