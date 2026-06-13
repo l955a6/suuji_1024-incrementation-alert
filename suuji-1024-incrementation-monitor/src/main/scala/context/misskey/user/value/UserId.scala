@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationAlert.domain.value.user
+package blue.l955a6.incrementationMonitor.context.misskey.user.value
 
 opaque type UserId = String
 
