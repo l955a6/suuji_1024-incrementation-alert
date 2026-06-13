@@ -26,6 +26,7 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
       Dependencies.typesafeConfig,
       Dependencies.airframeDi,
       Dependencies.airframeUlid,
+      Dependencies.fs2Core,
       Dependencies.sttp,
       Dependencies.scalatest
     )
