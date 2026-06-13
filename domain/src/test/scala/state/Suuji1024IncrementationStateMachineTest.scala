@@ -1,7 +1,7 @@
-package blue.l955a6.incrementationAlert.domain.state
+package blue.l955a6.incrementationMonitor.domain.state
 
-import blue.l955a6.incrementationAlert.domain.state.Suuji1024IncrementationStateMachine.Event
-import blue.l955a6.incrementationAlert.domain.value.number.IncrementationNumberDigits
+import blue.l955a6.incrementationMonitor.domain.state.Suuji1024IncrementationStateMachine.Event
+import blue.l955a6.incrementationMonitor.domain.value.number.IncrementationNumberDigits
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 

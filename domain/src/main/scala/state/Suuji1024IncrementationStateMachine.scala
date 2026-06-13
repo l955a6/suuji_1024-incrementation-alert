@@ -1,6 +1,6 @@
-package blue.l955a6.incrementationAlert.domain.state
+package blue.l955a6.incrementationMonitor.domain.state
 
-import blue.l955a6.incrementationAlert.domain.value.number.IncrementationNumberDigits
+import blue.l955a6.incrementationMonitor.domain.value.number.IncrementationNumberDigits
 
 /**
  * インクリメントが1ずつ行われているか、同じ数字が重複していないかを検証するステートマシンです。

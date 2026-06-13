@@ -1,6 +1,6 @@
-package blue.l955a6.incrementationAlert.domain.value.number
+package blue.l955a6.incrementationMonitor.domain.value.number
 
-import blue.l955a6.incrementationAlert.domain.testkit.gen.IncrementationNumberTestSupportGen
+import blue.l955a6.incrementationMonitor.domain.testkit.gen.IncrementationNumberTestSupportGen
 import org.scalacheck.Gen
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
