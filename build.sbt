@@ -13,7 +13,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(suuji1024IncrementationMonitor, domain)
+  .aggregate(suuji1024IncrementationMonitor, domain, infrastructure)
   .settings(
     publish / skip := true
   )
@@ -47,3 +47,15 @@ lazy val domain = (project in file("domain"))
       Dependencies.scalacheck
     )
   )
+
+lazy val infrastructure = (project in file("infrastructure"))
+  .settings(commonSettings)
+  .settings(
+    name := "infrastructure",
+    libraryDependencies ++= Seq(
+      Dependencies.airframeDi,
+      Dependencies.airframeUlid,
+      Dependencies.sttp
+    )
+  )
+  .dependsOn(suuji1024IncrementationMonitor)
