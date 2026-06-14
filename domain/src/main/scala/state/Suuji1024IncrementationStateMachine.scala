@@ -1,7 +1,9 @@
 package blue.l955a6.incrementationAlert.domain.state
 
+import blue.l955a6.incrementationAlert.domain.lib.state.StateMachine
 import blue.l955a6.incrementationAlert.domain.model.IncrementationMessage
 import blue.l955a6.incrementationAlert.domain.model.Message
+import blue.l955a6.incrementationAlert.domain.state.Suuji1024IncrementationStateMachine.State
 import blue.l955a6.incrementationAlert.domain.value.number.IncrementationNumberDigits
 
 /**
@@ -16,7 +18,11 @@ final case class Suuji1024IncrementationStateMachine(
   initialNumberDigits: IncrementationNumberDigits,
   maxNumberDigits: IncrementationNumberDigits,
   state: Suuji1024IncrementationStateMachine.State
-) {
+) extends StateMachine[
+      Suuji1024IncrementationStateMachine.State,
+      Suuji1024IncrementationStateMachine.Event
+    ] {
+
   import Suuji1024IncrementationStateMachine.*
 
   require(
@@ -26,7 +32,9 @@ final case class Suuji1024IncrementationStateMachine(
 
   // TODO: initialNumberDigitsの大きさ < maxNumberDigitsの大きさ であることを検証する
 
-  def send(event: Suuji1024IncrementationStateMachine.Event): Suuji1024IncrementationStateMachine =
+  override def send(
+    event: Suuji1024IncrementationStateMachine.Event
+  ): Suuji1024IncrementationStateMachine =
     event match {
       case Event.Incrementation(incrementationMessage) =>
         state match
@@ -75,7 +83,7 @@ final case class Suuji1024IncrementationStateMachine(
 }
 
 object Suuji1024IncrementationStateMachine {
-  enum State {
+  enum State extends StateMachine.State {
 
     /**
      * インクリメント監視を行っていない状態です。
@@ -96,7 +104,7 @@ object Suuji1024IncrementationStateMachine {
     )
   }
 
-  enum Event {
+  enum Event extends StateMachine.Event {
     case Incrementation(incrementationMessage: IncrementationMessage)
 
     case NormalMessage(message: Message)
