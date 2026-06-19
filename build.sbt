@@ -32,12 +32,6 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
     )
   )
   .dependsOn(domain)
-  .enablePlugins(JavaAppPackaging, DockerPlugin)
-  .settings(
-    dockerBaseImage := "eclipse-temurin:25-jre",
-    Docker / daemonUserUid := Some("1001"),
-    Docker / daemonUser := "suuji-1024-incrementation-monitor"
-  )
 
 lazy val domain = (project in file("domain"))
   .settings(commonSettings)
@@ -67,4 +61,22 @@ lazy val di = (project in file("di"))
     libraryDependencies ++= Seq(
       Dependencies.airframeDi
     )
+  )
+  .dependsOn(suuji1024IncrementationMonitor, infrastructure)
+
+lazy val entrypoint = (project in file("entrypoint"))
+  .settings(commonSettings)
+  .settings(
+    name := "entrypoint",
+    libraryDependencies ++= Seq(
+      Dependencies.catsEffect
+    )
+  )
+  .dependsOn(suuji1024IncrementationMonitor, di)
+  .enablePlugins(JavaAppPackaging, DockerPlugin)
+  .settings(
+    dockerBaseImage := "eclipse-temurin:25-jre",
+    Docker / packageName := "suuji-1024-incrementation-monitor",
+    Docker / daemonUserUid := Some("1001"),
+    Docker / daemonUser := "suuji-1024-incrementation-monitor"
   )
