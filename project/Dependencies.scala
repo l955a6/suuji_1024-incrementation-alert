@@ -7,6 +7,9 @@ object Dependencies {
   val airframeDi = "org.wvlet.airframe" %% "airframe" % airframeVersion
   val airframeUlid = "org.wvlet.airframe" %% "airframe-ulid" % airframeVersion
 
+  // fs2-coreに合わせる
+  val catsEffect = "org.typelevel" %% "cats-effect" % "3.7.0"
+
   val fs2Core = "co.fs2" %% "fs2-core" % "3.13.0"
 
   val sttp = "com.softwaremill.sttp.client4" %% "fs2" % "4.0.25"
