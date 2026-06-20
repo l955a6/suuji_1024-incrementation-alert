@@ -13,7 +13,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(suuji1024IncrementationMonitor, domain)
+  .aggregate(suuji1024IncrementationMonitor, domain, infrastructure, di)
   .settings(
     publish / skip := true
   )
@@ -22,15 +22,12 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
   .settings(commonSettings)
   .settings(
     name := "suuji-1024-incrementation-monitor",
-    libraryDependencies ++= Seq()
+    libraryDependencies ++= Seq(
+      Dependencies.typesafeConfig,
+      Dependencies.fs2Core
+    )
   )
   .dependsOn(domain)
-  .enablePlugins(JavaAppPackaging, DockerPlugin)
-  .settings(
-    dockerBaseImage := "eclipse-temurin:25-jre",
-    Docker / daemonUserUid := Some("1001"),
-    Docker / daemonUser := "suuji-1024-incrementation-monitor"
-  )
 
 lazy val domain = (project in file("domain"))
   .settings(commonSettings)
@@ -40,4 +37,42 @@ lazy val domain = (project in file("domain"))
       Dependencies.scalatest,
       Dependencies.scalacheck
     )
+  )
+
+lazy val infrastructure = (project in file("infrastructure"))
+  .settings(commonSettings)
+  .settings(
+    name := "infrastructure",
+    libraryDependencies ++= Seq(
+      Dependencies.airframeUlid,
+      Dependencies.sttp
+    )
+  )
+  .dependsOn(suuji1024IncrementationMonitor)
+
+lazy val di = (project in file("di"))
+  .settings(commonSettings)
+  .settings(
+    name := "di",
+    libraryDependencies ++= Seq(
+      Dependencies.airframeDi
+    )
+  )
+  .dependsOn(suuji1024IncrementationMonitor, infrastructure)
+
+lazy val entrypoint = (project in file("entrypoint"))
+  .settings(commonSettings)
+  .settings(
+    name := "entrypoint",
+    libraryDependencies ++= Seq(
+      Dependencies.catsEffect
+    )
+  )
+  .dependsOn(suuji1024IncrementationMonitor, di)
+  .enablePlugins(JavaAppPackaging, DockerPlugin)
+  .settings(
+    dockerBaseImage := "eclipse-temurin:25-jre",
+    Docker / packageName := "suuji-1024-incrementation-monitor",
+    Docker / daemonUserUid := Some("1001"),
+    Docker / daemonUser := "suuji-1024-incrementation-monitor"
   )
