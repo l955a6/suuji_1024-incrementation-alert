@@ -27,15 +27,15 @@ final case class Suuji1024IncrementationStateMachine(
 
   def send(
     event: Suuji1024IncrementationStateMachine.Event
-  ): Suuji1024IncrementationStateMachine =
+  ): Either[Suuji1024IncrementationStateMachine.Rejection, Suuji1024IncrementationStateMachine] =
     state match {
       case State.Idle =>
         event match
           case Event.Incrementation(digits) =>
             if (digits == initialNumberDigits)
-              copy(state = State.Monitoring(digits))
-            else this
-          case Event.Noop => this
+              Right(copy(state = State.Monitoring(digits)))
+            else Right(this)
+          case Event.Noop => Right(this)
       case currentState @ State.Monitoring(current) =>
         event match
           case Event.Incrementation(digits) =>
@@ -52,17 +52,10 @@ final case class Suuji1024IncrementationStateMachine(
                 // TODO: 長期的にインクリメントしていくことを意識せず、ちょっとだけインクリメントしようとする人がいるかもしれないので
                 //       インクリメントを監視し始める閾値を導入することを考える
                 State.Failed
-            copy(state = next)
-          case Event.Noop => this
+            Right(copy(state = next))
+          case Event.Noop => Right(this)
       case State.Failed | State.Completed =>
-        event match
-          case Event.Incrementation(digits) =>
-            val next =
-              if (digits == initialNumberDigits)
-                State.Monitoring(digits)
-              else State.Idle
-            copy(state = next)
-          case Event.Noop => copy(state = State.Idle)
+        Left(Rejection.AlreadyTerminated)
     }
 }
 
@@ -89,5 +82,9 @@ object Suuji1024IncrementationStateMachine {
     case Incrementation(digits: IncrementationNumberDigits)
 
     case Noop
+  }
+
+  enum Rejection {
+    case AlreadyTerminated
   }
 }
