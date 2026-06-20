@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationMonitor.context.misskey.user.value
+package blue.l955a6.incrementationMonitor.application.context.misskey.user.value
 
 opaque type UserHost = String
 

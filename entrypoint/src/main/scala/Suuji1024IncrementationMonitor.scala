@@ -1,7 +1,7 @@
 package blue.l955a6.incrementationMonitor.entrypoint
 
 import blue.l955a6.incrementationMonitor.di.MisskeyMessageReaderDesign
-import blue.l955a6.incrementationMonitor.usecase.misskey.enqueue.MisskeyIncrementationEnqueueUseCase
+import blue.l955a6.incrementationMonitor.application.usecase.misskey.enqueue.MisskeyIncrementationEnqueueUseCase
 import cats.effect.IO
 import cats.effect.kernel.Async
 import cats.effect.unsafe.implicits.global

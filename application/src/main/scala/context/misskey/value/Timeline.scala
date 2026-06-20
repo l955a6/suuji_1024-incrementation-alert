@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationMonitor.context.misskey.value
+package blue.l955a6.incrementationMonitor.application.context.misskey.value
 
 enum Timeline {
   case Global, Home, Social, Local

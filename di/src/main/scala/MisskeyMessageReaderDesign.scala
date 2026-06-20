@@ -1,9 +1,9 @@
 package blue.l955a6.incrementationMonitor.di
 
-import blue.l955a6.incrementationMonitor.context.misskey.value.NoteVisibility
-import blue.l955a6.incrementationMonitor.context.misskey.value.Timeline
+import blue.l955a6.incrementationMonitor.application.context.misskey.value.NoteVisibility
+import blue.l955a6.incrementationMonitor.application.context.misskey.value.Timeline
 import blue.l955a6.incrementationMonitor.infrastructure.reader.misskey.MisskeyMessageReader
-import blue.l955a6.incrementationMonitor.integration.MessageReader
+import blue.l955a6.incrementationMonitor.application.integration.MessageReader
 import com.typesafe.config.Config
 import wvlet.airframe.*
 

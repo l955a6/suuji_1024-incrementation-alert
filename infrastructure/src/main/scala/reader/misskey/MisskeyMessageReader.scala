@@ -1,8 +1,8 @@
 package blue.l955a6.incrementationMonitor.infrastructure.reader.misskey
 
 // import blue.l955a6.incrementationAlert.domain.model.Message
-import blue.l955a6.incrementationMonitor.context.misskey.value.{NoteVisibility, Timeline}
-import blue.l955a6.incrementationMonitor.integration.MessageReader
+import blue.l955a6.incrementationMonitor.application.context.misskey.value.{NoteVisibility, Timeline}
+import blue.l955a6.incrementationMonitor.application.integration.MessageReader
 // import cats.Applicative
 import cats.effect.kernel.Async
 import cats.syntax.functor.toFunctorOps
