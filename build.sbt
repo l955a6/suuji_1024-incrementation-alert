@@ -24,11 +24,7 @@ lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-increment
     name := "suuji-1024-incrementation-monitor",
     libraryDependencies ++= Seq(
       Dependencies.typesafeConfig,
-      Dependencies.airframeDi,
-      Dependencies.airframeUlid,
-      Dependencies.fs2Core,
-      Dependencies.sttp,
-      Dependencies.scalatest
+      Dependencies.fs2Core
     )
   )
   .dependsOn(domain)
