@@ -17,7 +17,8 @@ final case class Suuji1024IncrementationStateMachine(
   state: Suuji1024IncrementationStateMachine.State
 ) extends StateMachine[
       Suuji1024IncrementationStateMachine.State,
-      Suuji1024IncrementationStateMachine.Event
+      Suuji1024IncrementationStateMachine.Event,
+      Suuji1024IncrementationStateMachine.Rejection
     ] {
 
   import Suuji1024IncrementationStateMachine.*
@@ -31,14 +32,17 @@ final case class Suuji1024IncrementationStateMachine(
 
   override def send(
     event: Suuji1024IncrementationStateMachine.Event
-  ): Suuji1024IncrementationStateMachine =
+  ): Either[
+    Suuji1024IncrementationStateMachine.Rejection,
+    Suuji1024IncrementationStateMachine
+  ] =
     event match {
       case Event.Incrementation(digits) =>
         state match
           case State.Idle =>
             if (digits == initialNumberDigits)
-              copy(state = State.Monitoring(digits))
-            else this
+              Right(copy(state = State.Monitoring(digits)))
+            else Right(this)
           case currentState @ State.Monitoring(current) =>
             val next =
               if (digits.isIncrementedFrom(current) && digits == maxNumberDigits)
@@ -53,19 +57,19 @@ final case class Suuji1024IncrementationStateMachine(
                 // TODO: 長期的にインクリメントしていくことを意識せず、ちょっとだけインクリメントしようとする人がいるかもしれないので
                 //       インクリメントを監視し始める閾値を導入することを考える
                 State.Failed
-            copy(state = next)
+            Right(copy(state = next))
           case State.Failed | State.Completed =>
             val next =
               if (digits == initialNumberDigits)
                 State.Monitoring(digits)
               else State.Idle
-            copy(state = next)
+            Right(copy(state = next))
       case Event.Noop =>
         state match {
           case State.Failed | State.Completed =>
-            copy(state = State.Idle)
+            Right(copy(state = State.Idle))
           case _ =>
-            this
+            Right(this)
         }
     }
 }
@@ -93,5 +97,9 @@ object Suuji1024IncrementationStateMachine {
     case Incrementation(digits: IncrementationNumberDigits)
 
     case Noop
+  }
+
+  enum Rejection {
+    case AlreadyTerminated
   }
 }
