@@ -28,14 +28,17 @@ final case class Suuji1024IncrementationStateMachine(
   def send(
     event: Suuji1024IncrementationStateMachine.Event
   ): Suuji1024IncrementationStateMachine =
-    event match {
-      case Event.Incrementation(digits) =>
-        state match
-          case State.Idle =>
+    state match {
+      case State.Idle =>
+        event match
+          case Event.Incrementation(digits) =>
             if (digits == initialNumberDigits)
               copy(state = State.Monitoring(digits))
             else this
-          case currentState @ State.Monitoring(current) =>
+          case Event.Noop => this
+      case currentState @ State.Monitoring(current) =>
+        event match
+          case Event.Incrementation(digits) =>
             val next =
               if (digits.isIncrementedFrom(current) && digits == maxNumberDigits)
                 State.Completed
@@ -50,19 +53,16 @@ final case class Suuji1024IncrementationStateMachine(
                 //       インクリメントを監視し始める閾値を導入することを考える
                 State.Failed
             copy(state = next)
-          case State.Failed | State.Completed =>
+          case Event.Noop => this
+      case State.Failed | State.Completed =>
+        event match
+          case Event.Incrementation(digits) =>
             val next =
               if (digits == initialNumberDigits)
                 State.Monitoring(digits)
               else State.Idle
             copy(state = next)
-      case Event.Noop =>
-        state match {
-          case State.Failed | State.Completed =>
-            copy(state = State.Idle)
-          case _ =>
-            this
-        }
+          case Event.Noop => copy(state = State.Idle)
     }
 }
 
