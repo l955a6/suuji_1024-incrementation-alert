@@ -13,15 +13,15 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(suuji1024IncrementationMonitor, domain, infrastructure, di)
+  .aggregate(application, domain, infrastructure, di)
   .settings(
     publish / skip := true
   )
 
-lazy val suuji1024IncrementationMonitor = (project in file("suuji-1024-incrementation-monitor"))
+lazy val application = (project in file("application"))
   .settings(commonSettings)
   .settings(
-    name := "suuji-1024-incrementation-monitor",
+    name := "application",
     libraryDependencies ++= Seq(
       Dependencies.typesafeConfig,
       Dependencies.fs2Core
@@ -48,7 +48,7 @@ lazy val infrastructure = (project in file("infrastructure"))
       Dependencies.sttp
     )
   )
-  .dependsOn(suuji1024IncrementationMonitor)
+  .dependsOn(application)
 
 lazy val di = (project in file("di"))
   .settings(commonSettings)
@@ -58,7 +58,7 @@ lazy val di = (project in file("di"))
       Dependencies.airframeDi
     )
   )
-  .dependsOn(suuji1024IncrementationMonitor, infrastructure)
+  .dependsOn(application, infrastructure)
 
 lazy val entrypoint = (project in file("entrypoint"))
   .settings(commonSettings)
@@ -68,7 +68,7 @@ lazy val entrypoint = (project in file("entrypoint"))
       Dependencies.catsEffect
     )
   )
-  .dependsOn(suuji1024IncrementationMonitor, di)
+  .dependsOn(application, di)
   .enablePlugins(JavaAppPackaging, DockerPlugin)
   .settings(
     dockerBaseImage := "eclipse-temurin:25-jre",
