@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationMonitor.integration
+package blue.l955a6.incrementationMonitor.application.integration
 
 import cats.effect.kernel.Async
 
