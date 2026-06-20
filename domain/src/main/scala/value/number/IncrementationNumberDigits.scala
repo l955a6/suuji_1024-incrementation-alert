@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationAlert.domain.value.number
+package blue.l955a6.incrementationMonitor.domain.value.number
 
 /**
  * 全角、または半角の文字列で表されたインクリメントの数字

@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationAlert.domain.value.number
+package blue.l955a6.incrementationMonitor.domain.value.number
 
 /**
  * インクリメントを行う際に宣言される数値。

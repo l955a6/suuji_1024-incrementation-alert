@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationAlert.domain.testkit.gen
+package blue.l955a6.incrementationMonitor.domain.testkit.gen
 
 import org.scalacheck.Arbitrary
 import org.scalacheck.Gen

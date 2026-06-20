@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationAlert.domain.value.message
+package blue.l955a6.incrementationMonitor.context.misskey.message.value
 
 opaque type MessageUrl = String
 
