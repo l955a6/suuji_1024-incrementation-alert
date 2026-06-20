@@ -1,4 +1,4 @@
-package blue.l955a6.incrementationAlert.domain.lib.state
+package blue.l955a6.incrementationMonitor.domain.lib.state
 
 trait StateMachine[S, E] {
   val state: S

@@ -1,6 +1,6 @@
 package blue.l955a6.incrementationMonitor.domain.state
 
-import blue.l955a6.incrementationAlert.domain.lib.state.StateMachine
+import blue.l955a6.incrementationMonitor.domain.lib.state.StateMachine
 import blue.l955a6.incrementationMonitor.domain.value.number.IncrementationNumberDigits
 
 /**
