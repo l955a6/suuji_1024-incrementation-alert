@@ -24,7 +24,8 @@ lazy val application = (project in file("application"))
     name := "application",
     libraryDependencies ++= Seq(
       Dependencies.typesafeConfig,
-      Dependencies.fs2Core
+      Dependencies.fs2Core,
+      Dependencies.log4Cats
     )
   )
   .dependsOn(domain)
