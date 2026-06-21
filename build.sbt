@@ -66,7 +66,8 @@ lazy val entrypoint = (project in file("entrypoint"))
   .settings(
     name := "entrypoint",
     libraryDependencies ++= Seq(
-      Dependencies.catsEffect
+      Dependencies.catsEffect,
+      Dependencies.logbackClassic % Runtime
     )
   )
   .dependsOn(application, di)
