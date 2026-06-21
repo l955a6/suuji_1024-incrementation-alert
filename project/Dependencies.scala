@@ -13,6 +13,7 @@ object Dependencies {
   val fs2Core = "co.fs2" %% "fs2-core" % "3.13.0"
 
   val log4Cats = "org.typelevel" %% "log4cats-slf4j" % "2.8.0"
+  val logbackClassic = "ch.qos.logback" % "logback-classic" % "1.5.34"
 
   val sttp = "com.softwaremill.sttp.client4" %% "fs2" % "4.0.25"
 
