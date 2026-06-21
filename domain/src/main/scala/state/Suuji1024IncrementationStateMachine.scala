@@ -1,6 +1,5 @@
 package blue.l955a6.incrementationMonitor.domain.state
 
-import blue.l955a6.incrementationMonitor.domain.lib.state.StateMachine
 import blue.l955a6.incrementationMonitor.domain.value.number.IncrementationNumberDigits
 
 /**
@@ -15,10 +14,7 @@ final case class Suuji1024IncrementationStateMachine(
   initialNumberDigits: IncrementationNumberDigits,
   maxNumberDigits: IncrementationNumberDigits,
   state: Suuji1024IncrementationStateMachine.State
-) extends StateMachine[
-      Suuji1024IncrementationStateMachine.State,
-      Suuji1024IncrementationStateMachine.Event
-    ] {
+) {
 
   import Suuji1024IncrementationStateMachine.*
 
@@ -29,17 +25,20 @@ final case class Suuji1024IncrementationStateMachine(
 
   // TODO: initialNumberDigitsの大きさ < maxNumberDigitsの大きさ であることを検証する
 
-  override def send(
+  def send(
     event: Suuji1024IncrementationStateMachine.Event
-  ): Suuji1024IncrementationStateMachine =
-    event match {
-      case Event.Incrementation(digits) =>
-        state match
-          case State.Idle =>
+  ): Either[Suuji1024IncrementationStateMachine.Rejection, Suuji1024IncrementationStateMachine] =
+    state match {
+      case State.Idle =>
+        event match
+          case Event.Incrementation(digits) =>
             if (digits == initialNumberDigits)
-              copy(state = State.Monitoring(digits))
-            else this
-          case currentState @ State.Monitoring(current) =>
+              Right(copy(state = State.Monitoring(digits)))
+            else Right(this)
+          case Event.Noop => Right(this)
+      case currentState @ State.Monitoring(current) =>
+        event match
+          case Event.Incrementation(digits) =>
             val next =
               if (digits.isIncrementedFrom(current) && digits == maxNumberDigits)
                 State.Completed
@@ -53,25 +52,15 @@ final case class Suuji1024IncrementationStateMachine(
                 // TODO: 長期的にインクリメントしていくことを意識せず、ちょっとだけインクリメントしようとする人がいるかもしれないので
                 //       インクリメントを監視し始める閾値を導入することを考える
                 State.Failed
-            copy(state = next)
-          case State.Failed | State.Completed =>
-            val next =
-              if (digits == initialNumberDigits)
-                State.Monitoring(digits)
-              else State.Idle
-            copy(state = next)
-      case Event.Noop =>
-        state match {
-          case State.Failed | State.Completed =>
-            copy(state = State.Idle)
-          case _ =>
-            this
-        }
+            Right(copy(state = next))
+          case Event.Noop => Right(this)
+      case State.Failed | State.Completed =>
+        Left(Rejection.AlreadyTerminated)
     }
 }
 
 object Suuji1024IncrementationStateMachine {
-  enum State extends StateMachine.State {
+  enum State {
 
     /**
      * インクリメント監視を行っていない状態です。
@@ -89,9 +78,13 @@ object Suuji1024IncrementationStateMachine {
     case Failed
   }
 
-  enum Event extends StateMachine.Event {
+  enum Event {
     case Incrementation(digits: IncrementationNumberDigits)
 
     case Noop
+  }
+
+  enum Rejection {
+    case AlreadyTerminated
   }
 }
