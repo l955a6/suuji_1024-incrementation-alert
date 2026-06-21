@@ -13,7 +13,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(application, domain, infrastructure, di)
+  .aggregate(application, domain, infrastructure, di, entrypoint)
   .settings(
     publish / skip := true
   )
