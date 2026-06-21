@@ -9,6 +9,7 @@ import blue.l955a6.incrementationMonitor.application.integration.MessageReader
 // import cats.Applicative
 import cats.effect.kernel.Async
 import cats.syntax.functor.toFunctorOps
+import org.typelevel.log4cats.Logger
 // import fs2.Pipe
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.client4.basicRequest
@@ -34,8 +35,9 @@ class MisskeyMessageReader(config: MisskeyMessageReader.Config) extends MessageR
     s"""{"type":"connect","body":{"channel":"${config.timeline.chanelName}","id":"${ULID.newULIDString}"}}"""
 
   // def connect[F[_]: Async, A](pipe: Pipe[F, Message, A]): F[Unit] =
-  def connect[F[_]: Async](): F[Unit] =
+  def connect[F[_]: Async: Logger](): F[Unit] =
     HttpClientFs2Backend.resource[F]().use { backend =>
+      val logger = summon[Logger[F]]
       basicRequest
         .get(uri"wss://${config.host}/streaming")
         .response(
@@ -43,6 +45,11 @@ class MisskeyMessageReader(config: MisskeyMessageReader.Config) extends MessageR
             val init = fs2.Stream
               .emit(
                 WebSocketFrame.text(initDataFrame)
+              )
+              .evalTap(
+                Function.const(
+                  logger.info(s"${config.host} とのWebSocket通信を開始しました")
+                )
               )
             init ++ Fs2WebSockets
               .fromTextPipe(WebSocketFrame.text)(in)
