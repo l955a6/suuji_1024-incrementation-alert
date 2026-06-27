@@ -12,6 +12,11 @@ object Dependencies {
 
   val fs2Core = "co.fs2" %% "fs2-core" % "3.13.0"
 
+  private val circeVersion = "0.14.16"
+  val circeCore = "io.circe" %% "circe-core" % circeVersion
+  val circeGeneric = "io.circe" %% "circe-generic" % circeVersion
+  val circeParser = "io.circe" %% "circe-parser" % circeVersion
+
   val sttp = "com.softwaremill.sttp.client4" %% "fs2" % "4.0.25"
 
   val scalatest = "org.scalatest" %% "scalatest" % "3.2.20" % "test"
