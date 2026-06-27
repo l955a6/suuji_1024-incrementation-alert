@@ -48,7 +48,10 @@ lazy val infrastructure = (project in file("infrastructure"))
     name := "infrastructure",
     libraryDependencies ++= Seq(
       Dependencies.airframeUlid,
-      Dependencies.sttp
+      Dependencies.sttp,
+      Dependencies.circeCore,
+      Dependencies.circeGeneric,
+      Dependencies.circeParser
     )
   )
   .dependsOn(application)
