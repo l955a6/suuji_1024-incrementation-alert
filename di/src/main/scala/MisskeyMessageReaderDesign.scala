@@ -4,7 +4,10 @@ import blue.l955a6.incrementationMonitor.application.context.misskey.value.NoteV
 import blue.l955a6.incrementationMonitor.application.context.misskey.value.Timeline
 import blue.l955a6.incrementationMonitor.application.integration.MessageReader
 import blue.l955a6.incrementationMonitor.infrastructure.reader.misskey.MisskeyMessageReader
+import cats.effect.IO
+import cats.effect.kernel.Async
 import com.typesafe.config.Config
+import org.typelevel.log4cats.LoggerFactory
 import wvlet.airframe.*
 
 object MisskeyMessageReaderDesign {
@@ -12,8 +15,8 @@ object MisskeyMessageReaderDesign {
     .bind[MisskeyMessageReader.Config]
     .toProvider(readerConfig)
     .bind[MessageReader]
-    .toInstance(
-      MisskeyMessageReader(
+    .toProvider((a: Async[IO], lf: LoggerFactory[IO]) =>
+      MisskeyMessageReader[IO](
         MisskeyMessageReader.Config(
           host = "azkey.azuki.blue",
           timeline = Timeline.Global,

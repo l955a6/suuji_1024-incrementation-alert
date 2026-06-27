@@ -6,10 +6,11 @@ import blue.l955a6.incrementationMonitor.application.context.misskey.value.{
   Timeline
 }
 import blue.l955a6.incrementationMonitor.application.integration.MessageReader
+import blue.l955a6.incrementationMonitor.application.platform.logging.Logging
 // import cats.Applicative
 import cats.effect.kernel.Async
 import cats.syntax.functor.toFunctorOps
-import org.typelevel.log4cats.Logger
+import org.typelevel.log4cats.LoggerFactory
 // import fs2.Pipe
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.client4.basicRequest
@@ -21,7 +22,11 @@ import sttp.ws.WebSocketFrame
 import sttp.ws.WebSocketFrame.Text
 import wvlet.airframe.ulid.ULID
 
-class MisskeyMessageReader(config: MisskeyMessageReader.Config) extends MessageReader {
+class MisskeyMessageReader[F[_]](
+  config: MisskeyMessageReader.Config,
+  loggerFactory: LoggerFactory[F]
+) extends MessageReader[F]
+    with Logging[F] {
 
   /**
    * MisskeyサーバとのWebSocket通信が確立されたあと最初に送るデータフレーム。
@@ -35,9 +40,8 @@ class MisskeyMessageReader(config: MisskeyMessageReader.Config) extends MessageR
     s"""{"type":"connect","body":{"channel":"${config.timeline.chanelName}","id":"${ULID.newULIDString}"}}"""
 
   // def connect[F[_]: Async, A](pipe: Pipe[F, Message, A]): F[Unit] =
-  def connect[F[_]: Async: Logger](): F[Unit] =
+  def connect()(using Async[F]): F[Unit] =
     HttpClientFs2Backend.resource[F]().use { backend =>
-      val logger = summon[Logger[F]]
       basicRequest
         .get(uri"wss://${config.host}/streaming")
         .response(
@@ -48,7 +52,7 @@ class MisskeyMessageReader(config: MisskeyMessageReader.Config) extends MessageR
               )
               .evalTap(
                 Function.const(
-                  logger.info(s"${config.host} とのWebSocket通信を開始しました")
+                  info(s"${config.host} とのWebSocket通信を開始しました")
                 )
               )
             init ++ Fs2WebSockets
