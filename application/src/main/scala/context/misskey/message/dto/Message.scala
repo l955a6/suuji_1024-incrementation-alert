@@ -4,6 +4,8 @@ import blue.l955a6.incrementationMonitor.application.context.misskey.message.val
 import blue.l955a6.incrementationMonitor.application.context.misskey.message.value.MessageId
 import blue.l955a6.incrementationMonitor.application.context.misskey.message.value.MessageUrl
 import blue.l955a6.incrementationMonitor.application.context.misskey.user.dto.User
+import io.circe.Decoder
+import io.circe.generic.semiauto.deriveDecoder
 
 case class Message(
   id: MessageId,
@@ -11,3 +13,7 @@ case class Message(
   url: MessageUrl,
   user: User
 )
+
+object Message {
+  given Decoder[Message] = deriveDecoder
+}
