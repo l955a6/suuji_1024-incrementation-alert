@@ -8,6 +8,7 @@ import blue.l955a6.incrementationMonitor.application.context.misskey.value.{
 import blue.l955a6.incrementationMonitor.application.integration.MessageReader
 // import cats.Applicative
 import cats.effect.kernel.Async
+import cats.syntax.applicativeError.catsSyntaxApplicativeError
 import cats.syntax.functor.toFunctorOps
 import org.typelevel.log4cats.LoggerFactory
 // import fs2.Pipe
@@ -47,14 +48,20 @@ class MisskeyMessageReader[F[_]: Async: LoggerFactory](config: MisskeyMessageRea
               .emit(
                 WebSocketFrame.text(initDataFrame)
               )
+              .evalTap(
+                Function.const(
+                  logger.info(s"${config.host} とのWebSocket通信を開始しました")
+                )
+              )
             init ++ Fs2WebSockets
               .fromTextPipe(WebSocketFrame.text)(in)
               .collect { case Text(payload, _, _) => payload }
-              .debug()
+              .evalTap(payload => logger.debug(s"${config.host} からメッセージを受け取りました payload: $payload"))
               .drain
           }
         )
         .send(backend)
+        .onError { case e => logger.error(e)(s"${config.host} とのWebSocket通信に失敗しました") }
         .void
     }
 }

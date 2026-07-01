@@ -14,6 +14,7 @@ object Suuji1024IncrementationMonitor {
 
   def main(args: Array[String]): Unit =
     MisskeyMessageReaderDesign.design.build[MisskeyIncrementationEnqueueUseCase[IO]] { app =>
-      app.run().unsafeRunSync()
+      val logger = summon[LoggerFactory[IO]].getLogger
+      logger.info("Suuji1024IncrementationMonitor を起動します").flatMap(_ => app.run()).unsafeRunSync()
     }
 }
