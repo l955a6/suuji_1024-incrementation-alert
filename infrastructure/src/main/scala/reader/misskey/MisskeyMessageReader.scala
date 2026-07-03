@@ -1,9 +1,6 @@
 package blue.l955a6.incrementationMonitor.infrastructure.reader.misskey
 
-import blue.l955a6.incrementationMonitor.application.context.misskey.message.value.MessageContent
-import blue.l955a6.incrementationMonitor.application.context.misskey.message.value.MessageId
 import blue.l955a6.incrementationMonitor.application.context.misskey.user.value.UserHost
-import blue.l955a6.incrementationMonitor.application.context.misskey.user.value.UserId
 // import blue.l955a6.incrementationAlert.domain.model.Message
 import blue.l955a6.incrementationMonitor.application.context.misskey.value.{
   NoteVisibility,
@@ -13,9 +10,6 @@ import blue.l955a6.incrementationMonitor.application.integration.MessageReader
 // import cats.Applicative
 import cats.effect.kernel.Async
 import cats.syntax.functor.toFunctorOps
-import io.circe.Decoder
-import io.circe.generic.semiauto.deriveDecoder
-import io.circe.parser
 // import fs2.Pipe
 import sttp.capabilities.fs2.Fs2Streams
 import sttp.client4.basicRequest
@@ -54,7 +48,7 @@ class MisskeyMessageReader(config: MisskeyMessageReader.Config) extends MessageR
             init ++ Fs2WebSockets
               .fromTextPipe(WebSocketFrame.text)(in)
               .collect { case Text(payload, _, _) => payload }
-              .map(MisskeyMessageReader.decodePayload)
+              .map(MisskeyPayloadDecoder.decode(_, UserHost(config.host)))
               .debug()
               .drain
           }
@@ -72,31 +66,4 @@ object MisskeyMessageReader {
     excludeLocalOnly: Boolean
   )
 
-  private object MessageBody {
-    given Decoder[MessageBody] = deriveDecoder
-  }
-
-  private case class MessageBody(
-    id: MessageId,
-    user: User,
-    text: MessageContent,
-    visibility: NoteVisibility,
-    localOnly: Boolean
-  )
-
-  private case class User(
-    id: UserId,
-    host: UserHost
-  )
-
-  private object User {
-    given Decoder[User] = deriveDecoder
-  }
-
-  private def decodePayload(json: String): Either[io.circe.Error, MessageBody] = {
-    val outerDecoder = Decoder.instance[MessageBody](
-      _.downField("body").downField("body").as[MessageBody]
-    )
-    parser.decode[MessageBody](json)(using outerDecoder)
-  }
 }
