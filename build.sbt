@@ -13,7 +13,7 @@ lazy val commonSettings = Seq(
 )
 
 lazy val root = (project in file("."))
-  .aggregate(application, domain, infrastructure, di)
+  .aggregate(application, domain, infrastructure, di, entrypoint)
   .settings(
     publish / skip := true
   )
@@ -24,7 +24,8 @@ lazy val application = (project in file("application"))
     name := "application",
     libraryDependencies ++= Seq(
       Dependencies.typesafeConfig,
-      Dependencies.fs2Core
+      Dependencies.fs2Core,
+      Dependencies.log4Cats
     )
   )
   .dependsOn(domain)
@@ -65,7 +66,8 @@ lazy val entrypoint = (project in file("entrypoint"))
   .settings(
     name := "entrypoint",
     libraryDependencies ++= Seq(
-      Dependencies.catsEffect
+      Dependencies.catsEffect,
+      Dependencies.logbackClassic % Runtime
     )
   )
   .dependsOn(application, di)

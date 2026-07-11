@@ -3,17 +3,21 @@ package blue.l955a6.incrementationMonitor.di
 import blue.l955a6.incrementationMonitor.application.context.misskey.value.NoteVisibility
 import blue.l955a6.incrementationMonitor.application.context.misskey.value.Timeline
 import blue.l955a6.incrementationMonitor.application.integration.MessageReader
+import blue.l955a6.incrementationMonitor.application.usecase.misskey.enqueue.MisskeyIncrementationEnqueueUseCase
 import blue.l955a6.incrementationMonitor.infrastructure.reader.misskey.MisskeyMessageReader
+import cats.effect.IO
+import cats.effect.kernel.Async
 import com.typesafe.config.Config
+import org.typelevel.log4cats.LoggerFactory
 import wvlet.airframe.*
 
 object MisskeyMessageReaderDesign {
-  val design = newDesign
+  def design(using Async[IO], LoggerFactory[IO]) = newDesign
     .bind[MisskeyMessageReader.Config]
     .toProvider(readerConfig)
-    .bind[MessageReader]
+    .bind[MessageReader[IO]]
     .toInstance(
-      MisskeyMessageReader(
+      MisskeyMessageReader[IO](
         MisskeyMessageReader.Config(
           host = "azkey.azuki.blue",
           timeline = Timeline.Global,
@@ -22,6 +26,10 @@ object MisskeyMessageReaderDesign {
         )
       )
     )
+    .bind[MisskeyIncrementationEnqueueUseCase[IO]]
+    .toProvider { (reader: MessageReader[IO]) =>
+      MisskeyIncrementationEnqueueUseCase[IO](reader)
+    }
 
   private def readerConfig(config: Config): MisskeyMessageReader.Config = {
     val misskeyConfigRoot = config.getConfig("misskey")

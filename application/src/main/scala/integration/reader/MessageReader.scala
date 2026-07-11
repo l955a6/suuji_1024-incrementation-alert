@@ -1,9 +1,7 @@
 package blue.l955a6.incrementationMonitor.application.integration
 
-import cats.effect.kernel.Async
-
-trait MessageReader {
+trait MessageReader[F[_]] {
 
   // def connect[F[_]: Async, A](pipe: Pipe[F, Message, A]): F[Unit]
-  def connect[F[_]: Async](): F[Unit]
+  def connect(): F[Unit]
 }
